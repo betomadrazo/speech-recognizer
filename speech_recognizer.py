@@ -34,7 +34,7 @@ class VoskTranscriptionService:
             sys.exit(1)
 
         self.model = vosk.Model(model_path)
-        print("✓ Model loaded successfully!")
+        print("Model loaded successfully!")
 
         # Processing queue
         self.processing_queue = queue.Queue()
@@ -75,7 +75,7 @@ class VoskTranscriptionService:
     def _transcribe_file(self, audio_file):
         """Transcribe a single file"""
         start_time = time.time()
-        print(f"🎵 Processing: {audio_file.name}")
+        print(f" Processing: {audio_file.name}")
 
         # Convert to WAV if needed
         if audio_file.suffix.lower() != ".wav":
@@ -90,7 +90,7 @@ class VoskTranscriptionService:
             wf = wave.open(str(wav_file), "rb")
 
             if wf.getnchannels() != 1 or wf.getsampwidth() != 2:
-                print(f"❌ Invalid audio format for {audio_file.name}")
+                print(f" Invalid audio format for {audio_file.name}")
                 return
 
             # Create recognizer (fast since model is already loaded)
@@ -145,7 +145,7 @@ class VoskTranscriptionService:
             self._send_message(full_text)
 
         except Exception as e:
-            print(f"❌ Error processing {audio_file}: {e}")
+            print(f" Error processing {audio_file}: {e}")
 
     def _send_message(self, text):
         # Send result to socket
@@ -170,7 +170,7 @@ class AudioFileHandler(FileSystemEventHandler):
         if not event.is_directory:
             file_path = Path(event.src_path)
             if file_path.suffix.lower() in self.supported_formats:
-                print(f"📁 New file detected: {file_path.name}")
+                print(f" New file detected: {file_path.name}")
                 # Add small delay to ensure file is fully written
                 time.sleep(0.5)
                 self.service.processing_queue.put(file_path)
@@ -199,21 +199,21 @@ def main():
     observer.schedule(event_handler, str(service.watch_directory), recursive=False)
     observer.start()
 
-    print(f"🚀 Vosk Transcription Service started!")
-    print(f"📂 Watching: {service.watch_directory}")
-    print(f"📄 Output: {service.output_directory}")
-    print("🎯 Drop audio/video files in the input directory to transcribe them")
+    print(f" Vosk Transcription Service started!")
+    print(f" Watching: {service.watch_directory}")
+    print(f" Output: {service.output_directory}")
+    print(" Drop audio/video files in the input directory to transcribe them")
     print("Press Ctrl+C to stop")
 
     try:
         while True:
             time.sleep(1)
     except KeyboardInterrupt:
-        print("\n🛑 Stopping service...")
+        print("\n Stopping service...")
         service.is_running = False
         observer.stop()
         observer.join()
-        print("✅ Service stopped")
+        print("Service stopped")
 
 
 if __name__ == "__main__":
