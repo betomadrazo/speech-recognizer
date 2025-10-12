@@ -8,6 +8,6 @@ class SocketServer:
         self.socket.bind("tcp://*:5555")
 
     def send_message(self, message):
-        msg = self.socket.recv_string()
-        print("sending message")
+        self.socket.recv_string()
+        print("Enviando mensaje")
         self.socket.send_string(f"{message}")
